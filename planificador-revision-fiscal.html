@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planificador de revisión de expedientes fiscales</title><meta name="description" content="Calcula una fecha interna de revisión antes del plazo de presentación, con un margen de lunes a viernes.">
+<style>body{font:1rem/1.65 system-ui;color:#212038;background:#faf9ff;margin:0}main{max-width:44rem;margin:3rem auto;padding:0 1.3rem 2rem}h1{line-height:1.15;font-size:clamp(1.7rem,5vw,2.35rem)}form{border:1px solid #dfdaef;border-radius:.8rem;padding:1rem 1.25rem;background:white}label{display:block;margin:.5rem 0}input,button{font:inherit;padding:.25rem .5rem}button{border:0;background:#5140d5;color:#fff;border-radius:.3rem;padding:.45rem .85rem}output{display:block;font-weight:650;margin-top:.8rem}a{color:#4a39bd}</style>
+</head>
+<body><main>
+<h1>Planificador de revisión de expedientes fiscales</h1>
+<p>Parte de una fecha de vencimiento que el despacho haya confirmado. Calcula una fecha interna de revisión contando hacia atrás de lunes a viernes. Ajusta el día resultante si coincide con un festivo o un día de cierre del despacho. Los datos que introduzcas se quedan en el navegador.</p>
+<form id="planner"><label>Vencimiento confirmado <input id="deadline" type="date" required></label><label>Días de margen <input id="margin" type="number" min="1" max="60" value="5" required></label><button>Calcular la fecha interna</button><output id="result" aria-live="polite"></output></form>
+<h2>Cómo usar la fecha en el despacho</h2>
+<ol><li>Antes del corte, asigna un responsable y comprueba que el expediente tiene la documentación imprescindible.</li><li>Al llegar al corte, separa los casos listos para validar de los que siguen pendientes. En cada excepción registra el motivo y el siguiente paso.</li><li>Tras presentar, guarda el justificante en el expediente y registra el estado para que la siguiente persona del equipo lo pueda consultar.</li></ol>
+<p>Si llevas varios modelos y clientes, consulta el <a href="https://numio.es/asesorias/calendario-fiscal/">calendario fiscal de Numio para asesorías</a>, que permite consultar plazos y estados de la cartera en una sola agenda.</p>
+</main><script>
+const planner = document.querySelector('#planner');
+const output = document.querySelector('#result');
+const formatter = new Intl.DateTimeFormat('es-ES', { dateStyle: 'full', timeZone: 'UTC' });
+planner.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const deadline = new Date(document.querySelector('#deadline').valueAsNumber);
+  let remaining = document.querySelector('#margin').valueAsNumber;
+  while (remaining > 0) {
+    deadline.setUTCDate(deadline.getUTCDate() - 1);
+    const weekday = deadline.getUTCDay();
+    if (weekday !== 0 && weekday !== 6) remaining--;
+  }
+  output.textContent = 'Fecha interna sugerida: ' + formatter.format(deadline);
+});
+</script></body></html>
