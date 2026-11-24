@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Compara dos importes de un informe financiero y documenta qué cambió antes de enviar la nueva versión al cliente.">
+<link rel="canonical" href="https://realdavid7.github.io/guia-revision-de-cobros/comparador-versiones-informe.html">
+<title>Comparador de versiones de un informe financiero</title>
+<style>body{margin:0;padding:2rem 1rem;background:#faf9fe;color:#241e38;font:1rem/1.55 system-ui,sans-serif}main{max-width:48rem;margin:auto}a{color:#4a37aa}fieldset{border:1px solid #ddd7ed;border-radius:.7rem;background:#fff;padding:1rem}label{display:block;margin-bottom:.9rem}input{display:block;max-width:100%;margin-top:.2rem;padding:.4rem;font:inherit}output{display:block;font-weight:600;margin:.8rem 0}p,li{max-width:68ch}</style>
+<main>
+<h1>Comparador de versiones de un informe financiero</h1>
+<p>Comprueba cuánto cambió una partida entre la versión enviada al cliente y la revisión. Las cifras de entrada son ficticias y el cálculo se hace en esta página.</p>
+<fieldset><legend>Importes en euros</legend>
+<label>Última versión enviada <input id="before" type="number" step="0.01" min="-1000000000" max="1000000000" required value="8200"></label>
+<label>Versión revisada <input id="after" type="number" step="0.01" min="-1000000000" max="1000000000" required value="7100"></label>
+<output id="difference" for="before after" aria-live="polite">Diferencia (revisada − enviada): −1.100,00 €</output>
+</fieldset>
+<h2>Qué anotar junto al cambio</h2>
+<ul><li>Cliente, periodo, fecha de corte y números de versión.</li><li>Partida afectada, causa y documento que justifica el ajuste.</li><li>Quién revisó el cambio y cuál es la versión que se comparte.</li></ul>
+<p>Si las dos versiones usan un periodo o un alcance distinto, identifica esa diferencia antes de explicar la variación. Para elegir dónde registrar comentarios, permisos y versiones, consulta la <a href="https://numio.es/blog/software-reporting-financiero-colaborativo-asesorias/">comparativa de reporting colaborativo para asesorías</a>.</p>
+<p><a href="./">Volver a los recursos del despacho</a></p>
+</main>
+<script>
+const before = document.querySelector('#before');
+const after = document.querySelector('#after');
+const output = document.querySelector('#difference');
+const currency = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', signDisplay: 'exceptZero' });
+
+function showDifference() {
+  if (!before.validity.valid || !after.validity.valid) {
+    output.textContent = 'Introduce dos importes con un máximo de dos decimales.';
+    return;
+  }
+  const differenceInCents = Math.round(after.valueAsNumber * 100) - Math.round(before.valueAsNumber * 100);
+  output.textContent = 'Diferencia (revisada − enviada): ' + currency.format(differenceInCents / 100);
+}
+
+before.addEventListener('input', showDifference);
+after.addEventListener('input', showDifference);
+showDifference();
+</script>
+</html>
